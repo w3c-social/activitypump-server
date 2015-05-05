@@ -18,13 +18,38 @@ package main
 import (
     "fmt"
     "net/http"
+    "encoding/json"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+var users map[string]map[string]string
+
+func userHandler(w http.ResponseWriter, r *http.Request) {
+  nick := r.URL.Path[6:]
+  fmt.Printf("Request for user %s\n", nick)
+  user := users[nick]
+  if user == nil {
+    http.Error(w, "No such user", 404)
+  } else {
+    b, err := json.Marshal(user)
+    marshalled := string(b)
+    fmt.Printf("User: '%s'", marshalled)
+    if err != nil {
+      http.Error(w, "Error encoding data", 500)
+    } else {
+      w.Header().Set("Content-Type", "application/activitystreams+json")
+      fmt.Fprintf(w, marshalled)
+    }
+  }
 }
 
 func main() {
-    http.HandleFunc("/", handler)
-    http.ListenAndServe(":8080", nil)
+  http.HandleFunc("/user/", userHandler)
+  users = make(map[string]map[string]string)
+  users["evan"] = map[string]string {
+    "preferredUsername": "evan",
+    "displayName": "Evan Prodromou",
+    "summary": "A person",
+    "icon": "https://e14n.com/uploads/evan/2014/9/24/knyf1g_thumb.jpg",
+  }
+  http.ListenAndServe(":8080", nil)
 }
