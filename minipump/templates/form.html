@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <p>
+    Submit an example user... this is just a proof of populating the USER
+    dictionary
+  </p>
+
+  <form action="{{ url_for('submit_example') }}" method="post">
+    <table>
+      <tr>
+        <th>Username:</th>
+        <td>
+          <input type="text" name="username"/>
+        </td>
+      </tr>
+      <tr>
+        <th>Real name:</th>
+        <td>
+          <input type="text" name="real_name"/>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input type="submit" /></td>
+      </tr>
+    </table>
+  </form>
+{% endblock %}

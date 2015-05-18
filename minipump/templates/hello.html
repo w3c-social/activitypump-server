@@ -1,11 +1,14 @@
-<!doctype html>
-<html>
-<head>
-  <title>Hello {{ name }}</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}Hello {{ name }}{% endblock %}
+
+{% block body %}
   <h1>What's up {{ name }}</h1>
   <p>What's the haps?</p>
-</body>
-</html>
+
+  <h1>Things to do</h1>
+  <ul>
+    <li><a href="{{ url_for('submit_example') }}">Try submitting some data</a></li>
+    <li><a href="{{ url_for('show_db_stuff') }}">Show current users submitted</a></li>
+  </ul>
+{% endblock %}

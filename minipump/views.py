@@ -12,10 +12,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from minipump import app
+import json
+
 from flask import render_template
+from flask import request, make_response, redirect, url_for
+
+from minipump import app
+from minipump import db
+
 
 @app.route("/")
 @app.route("/hello/<name>/")
 def index(name="friend"):
     return render_template("hello.html", name=name)
+
+
+# Dumbest proof of concept possible:
+
+@app.route("/submit-example/", methods=["GET", "POST"])
+def submit_example():
+    if request.method == "GET":
+        return render_template("form.html")
+
+    # otherwise, it's a POST
+    new_user = {}
+    def update_from_field(fieldname):
+        if fieldname in request.form:
+            new_user[fieldname] = request.form[fieldname]
+
+    map(update_from_field, ['username', 'real_name'])
+    db.USERS[request.form['username']] = new_user
+
+    return redirect(url_for('show_db_stuff'))
+
+
+@app.route("/show-db-stuff/")
+def show_db_stuff():
+    response = make_response(json.dumps(db.USERS))
+    response.headers['Content-Type'] = 'application/json'
+    return response
+    
