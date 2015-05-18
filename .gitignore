@@ -26,3 +26,8 @@ _testmain.go
 main
 
 *.egg-info
+*.pyc
+/bin/
+/include/
+/lib/
+/local/
