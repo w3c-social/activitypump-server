@@ -13,7 +13,9 @@
 # limitations under the License.
 
 from minipump import app
+from flask import render_template
 
 @app.route("/")
-def index():
-    return "Sup, world"
+@app.route("/hello/<name>/")
+def index(name="friend"):
+    return render_template("hello.html", name=name)
